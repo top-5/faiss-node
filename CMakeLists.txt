@@ -4,6 +4,24 @@ cmake_policy(SET CMP0042 NEW)
 
 project(faiss-node LANGUAGES CXX)
 
+# Include Node.js headers
+execute_process(
+    COMMAND node -p "require('node-addon-api').include"
+    OUTPUT_VARIABLE NODE_ADDON_API_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+include_directories(${NODE_ADDON_API_DIR})
+
+# Include Node.js development headers
+execute_process(
+    COMMAND node -p "require('node-gyp-build').path()"
+    OUTPUT_VARIABLE NODE_INCLUDE_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+include_directories(${NODE_INCLUDE_DIR})
+
+include(CMakeFindDependencyMacro)
+
 if (APPLE)
     find_package(OpenMP)
     if (NOT OpenMP_FOUND)
@@ -48,12 +66,8 @@ file(GLOB SOURCE_FILES "src/*.cc" "src/*.h")
 
 set(SOURCE ${SOURCE_FILES})
 
-add_subdirectory("deps/faiss")
-set_target_properties(faiss PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    LIBRARY_OUTPUT_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    RUNTIME_OUTPUT_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>
-)
+# Add the Faiss library from vcpkg
+find_package(faiss CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
@@ -64,7 +78,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
             LINK_FLAGS "-Wl,-rpath,$ORIGIN/")
 endif()
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/node_modules/node-addon-api")
-target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB} faiss)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_JS_LIB} faiss)
 
 if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
   # Generate node.lib

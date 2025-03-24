@@ -1,3 +1,5 @@
+Port of fais-node for Windows. Uses vcpkg for the build instead of deps/faiss.
+
 # faiss-node
 [![NPM Version](https://img.shields.io/npm/v/faiss-node?logo=npm)](https://www.npmjs.com/package/faiss-node)
 [![Node Version](https://img.shields.io/node/v/faiss-node)](https://github.com/ewfian/faiss-node)

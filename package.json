@@ -1,7 +1,7 @@
 {
-  "name": "faiss-node",
-  "version": "0.5.1",
-  "description": "Node.js bindings for faiss",
+  "name": "faiss-node-win",
+  "version": "0.6.0",
+  "description": "Node.js bindings for faiss on Windows",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "gypfile": true,
@@ -16,18 +16,18 @@
     ]
   },
   "scripts": {
-    "build:debug": "cmake-js compile -DCMAKE_BUILD_TYPE=Debug",
-    "build": "cmake-js compile",
+    "build:debug": "set CMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake && cmake-js -DCMAKE_BUILD_TYPE=Debug compile",
+    "build": "set CMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake && cmake-js compile",
     "build:clean": "cmake-js clean",
     "build:test": "npm run build && npm run test",
-    "prebuild-package": "prebuild --verbose --runtime napi --include-regex \"^(faiss-node\\.node)|(mkl_sequential\\.2\\.dll)|(faiss\\.lib)|(libfaiss\\.a)|(libmkl_intel_lp64\\.so)|(libmkl_sequential\\.so)|(libmkl_core\\.so)|(libomp\\.dylib)|(libgomp\\.so\\.1)|(libopenblas\\.so\\.3)|(libopenblas\\.so\\.0)|(libgfortran\\.so\\.5)|(libquadmath\\.so\\.0)$\" --backend cmake-js",
-    "install": "prebuild-install --runtime napi --verbose || (git clone -b v1.7.4 --depth 1 https://github.com/facebookresearch/faiss.git deps/faiss && npm i cmake-js && npm run build)",
+    "prebuild-package": "set CMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake && prebuild --verbose --runtime napi --include-regex \"^(faiss-node\\.node)|(mkl_sequential\\.2\\.dll)|(faiss\\.lib)|(libfaiss\\.a)|(libmkl_intel_lp64\\.so)|(libmkl_sequential\\.so)|(libmkl_core\\.so)|(libomp\\.dylib)|(libgomp\\.so\\.1)|(libopenblas\\.so\\.3)|(libopenblas\\.so\\.0)|(libgfortran\\.so\\.5)|(libquadmath\\.so\\.0)$\" --backend cmake-js",
+    "install": "prebuild-install --runtime napi --verbose || npm run build",
     "test": "jest",
     "doc": "typedoc --includeVersion"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ewfian/faiss-node.git"
+    "url": "git+https://github.com/top-5/faiss-node.git"
   },
   "author": "ewfian",
   "license": "MIT",
@@ -47,18 +47,20 @@
     "embeddings"
   ],
   "bugs": {
-    "url": "https://github.com/ewfian/faiss-node/issues"
+    "url": "https://github.com/top-5/faiss-node/issues"
   },
-  "homepage": "https://github.com/ewfian/faiss-node#readme",
+  "homepage": "https://github.com/top-5/faiss-node#readme",
   "devDependencies": {
-    "cmake-js": "^7.2.1",
+    "cmake-js": "^7.3.0",
     "jest": "^29.5.0",
-    "prebuild": "^11.0.4",
+    "node-addon-api": "^8.3.1",
+    "node-gyp": "^11.1.0",
+    "node-gyp-build": "^4.8.4",
+    "prebuild": "^13.0.1",
     "typedoc": "^0.23.28"
   },
   "dependencies": {
     "bindings": "^1.5.0",
-    "node-addon-api": "^6.0.0",
     "prebuild-install": "^7.1.1"
   }
 }
